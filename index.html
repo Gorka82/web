@@ -321,25 +321,30 @@
                 </div>
                 
                 <div class="contact-form fade-in">
-                    <form id="contact-form">
+                    <!-- CAMBIO 1: Añadidos action y method al formulario -->
+                    <form id="contact-form" action="https://formspree.io/f/movkkveo" method="POST">
                         <div class="form-group">
                             <label for="name">Nombre completo</label>
-                            <input type="text" id="name" class="form-control" required>
+                            <!-- CAMBIO 2: Añadido el atributo "name" -->
+                            <input type="text" id="name" name="name" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" class="form-control" required>
+                            <!-- CAMBIO 2: Añadido el atributo "name" -->
+                            <input type="email" id="email" name="email" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="subject">Asunto</label>
-                            <input type="text" id="subject" class="form-control" required>
+                            <!-- CAMBIO 2: Añadido el atributo "name" -->
+                            <input type="text" id="subject" name="subject" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="message">Mensaje</label>
-                            <textarea id="message" class="form-control" required></textarea>
+                            <!-- CAMBIO 2: Añadido el atributo "name" -->
+                            <textarea id="message" name="message" class="form-control" required></textarea>
                         </div>
                         
                         <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar Mensaje</button>
@@ -431,62 +436,54 @@
         });
         
         // Form submission
-         // Form submission
-    document.getElementById('contact-form').addEventListener('submit', function(e) {
-        e.preventDefault(); // Evita que el formulario se envíe de la forma tradicional
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que el formulario se envíe de la forma tradicional
 
-        const form = e.target;
-        const formContainer = document.querySelector('.contact-form');
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalButtonText = submitButton.innerText;
+            const form = e.target;
+            const formContainer = document.querySelector('.contact-form');
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerText;
 
-        // 1. Mostrar estado de "cargando"
-        submitButton.innerText = 'Enviando...';
-        submitButton.disabled = true;
+            // 1. Mostrar estado de "cargando"
+            submitButton.innerText = 'Enviando...';
+            submitButton.disabled = true;
 
-        // 2. Enviar los datos a Formspree usando la API Fetch
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                // 3. Si el envío fue exitoso, mostrar el mensaje de éxito
-                formContainer.innerHTML = `
-                    <div style="text-align: center; padding: 30px;">
-                        <i class="fas fa-check-circle" style="font-size: 3rem; color: #28a745; margin-bottom: 20px;"></i>
-                        <h3>¡Mensaje enviado con éxito!</h3>
-                        <p>Gracias por contactarme. Te responderé lo antes posible.</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Enviar otro mensaje</button>
-                    </div>
-                `;
-            } else {
-                // Si hubo un error, lo mostramos
-                response.json().then(data => {
-                    alert(data.errors ? data.errors.map(err => err.message).join(', ') : 'Hubo un error al enviar el formulario.');
-                });
-            }
-        }).catch(error => {
-            // En caso de error de red o del servidor
-            alert('Hubo un problema al enviar tu mensaje. Por favor, inténtalo de nuevo más tarde.');
-            console.error('Error:', error);
-        }).finally(() => {
-            // 4. Restaurar el botón (solo si no se ha recargado la página)
-            if (submitButton) {
-                submitButton.innerText = originalButtonText;
-                submitButton.disabled = false;
-            }
+            // 2. Enviar los datos a Formspree usando la API Fetch
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // 3. Si el envío fue exitoso, mostrar el mensaje de éxito
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 30px;">
+                            <i class="fas fa-check-circle" style="font-size: 3rem; color: #28a745; margin-bottom: 20px;"></i>
+                            <h3>¡Mensaje enviado con éxito!</h3>
+                            <p>Gracias por contactarme. Te responderé lo antes posible.</p>
+                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Enviar otro mensaje</button>
+                        </div>
+                    `;
+                } else {
+                    // Si hubo un error, lo mostramos
+                    response.json().then(data => {
+                        alert(data.errors ? data.errors.map(err => err.message).join(', ') : 'Hubo un error al enviar el formulario.');
+                    });
+                }
+            }).catch(error => {
+                // En caso de error de red o del servidor
+                alert('Hubo un problema al enviar tu mensaje. Por favor, inténtalo de nuevo más tarde.');
+                console.error('Error:', error);
+            }).finally(() => {
+                // 4. Restaurar el botón (solo si no se ha recargado la página)
+                if (submitButton) {
+                    submitButton.innerText = originalButtonText;
+                    submitButton.disabled = false;
+                }
+            });
         });
-    });
-</script>
+    </script>
 </body>
-
 </html>
-
-
-
-
-
-
